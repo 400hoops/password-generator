@@ -158,8 +158,12 @@
 
       function getRandomInt(max) {
         const array = new Uint32Array(1);
-        window.crypto.getRandomValues(array);
-        return array[0] % max;
+        let randomValue;
+        do {
+          window.crypto.getRandomValues(array);
+          randomValue = array[0];
+        } while (randomValue >= Math.floor((0xffffffff / max) * max)); // Reject biased values
+        return randomValue % max;
       }
 
       function getRandomChar(chars) {
