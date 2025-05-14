@@ -180,7 +180,7 @@
           const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
           const lowerChars = "abcdefghijklmnopqrstuvwxyz";
           const numberChars = "0123456789";
-          const symbolChars = "!@#$%^&*()_+[]{}|;:,.<>?";
+          const symbolChars = "!@#$£€¥%^&*''""()_+-={}[]|\\;:,.<>?";
 
           let charset = "";
           let requiredChars = [];
@@ -215,7 +215,6 @@
             passwordArray.push(getRandomChar(charset));
           }
 
-          // Shuffle password characters
           for (let i = passwordArray.length - 1; i > 0; i--) {
             const j = getRandomInt(i + 1);
             [passwordArray[i], passwordArray[j]] = [
