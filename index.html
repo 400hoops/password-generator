@@ -162,7 +162,7 @@
         do {
           window.crypto.getRandomValues(array);
           randomValue = array[0];
-        } while (randomValue >= Math.floor((0xffffffff / max) * max)); // Reject biased values
+        } while (randomValue >= Math.floor((0xffffffff / max) * max));
         return randomValue % max;
       }
 
