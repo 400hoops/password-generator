@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>🔑 Password Generator</title>
+    <meta
+      name="description"
+      content="No Ads, No Tracking, Secure Passwords Anywhere!"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta
+      name="apple-mobile-web-app-status-bar-style"
+      content="black-translucent"
+    />
+    <meta name="apple-mobile-web-app-title" content="Password Generator" />
+    <link
+      rel="apple-touch-icon"
+      href="icon.png"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        overflow-y: scroll;
+        font-family: "Overpass", sans-serif;
+        background-color: #f8f9fa;
+        color: rgb(51, 51, 51);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 30px;
+        transition:
+          background-color 0.3s,
+          color 0.3s;
+      }
+
+      h1 {
+        margin-bottom: 20px;
+      }
+
+      form {
+        background: rgb(255, 255, 255);
+        border: 1px solid rgb(204, 204, 204);
+        padding: 20px 30px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+        width: 100%;
+        max-width: 500px;
+      }
+
+      label {
+        display: block;
+        margin-top: 15px;
+      }
+
+      .checkbox-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 10px 0;
+      }
+
+      .checkbox-group label {
+        display: flex;
+        align-items: center;
+      }
+
+      input[type="range"] {
+        width: 100%;
+      }
+
+      input[type="text"] {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid rgb(204, 204, 204);
+        border-radius: 5px;
+        font-family: "Overpass", sans-serif;
+        box-sizing: border-box;
+        margin-top: 8px;
+        transition: border-color 0.3s;
+      }
+
+      input[type="text"]:focus {
+        outline: none;
+        border-color: rgb(0, 123, 255);
+      }
+
+      button[type="submit"] {
+        background-color: rgb(0, 123, 255);
+        color: rgb(255, 255, 255);
+        padding: 12px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+        margin-top: 20px;
+        font-family: "Overpass", sans-serif;
+      }
+
+      button[type="submit"]:hover {
+        background-color: rgb(0, 86, 179);
+      }
+
+      .output {
+        margin-top: 20px;
+        font-size: 18px;
+        text-align: center;
+        word-break: break-word;
+      }
+
+      #copy-feedback {
+        margin-top: 10px;
+        font-size: 14px;
+        color: rgb(40, 167, 69);
+        display: none;
+        text-align: center;
+      }
+
+      .collapsible-section {
+        margin-top: 15px;
+        border-top: 1px solid rgb(204, 204, 204);
+        padding-top: 15px;
+      }
+
+      .collapsible-header {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+        user-select: none;
+      }
+
+      .collapsible-header::before {
+        content: "\25B6\FE0E";
+        display: inline-block;
+        transition: transform 0.3s;
+      }
+
+      .collapsible-header.expanded::before {
+        transform: rotate(90deg);
+      }
+
+      .collapsible-content {
+        display: none;
+        margin-top: 10px;
+      }
+
+      .collapsible-content.expanded {
+        display: block;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        body {
+          background-color: rgb(47, 34, 37);
+          color: rgb(255, 255, 255);
+        }
+
+        form {
+          background-color: rgb(70, 57, 58);
+          border-color: rgb(137, 120, 122);
+        }
+
+        input[type="text"] {
+          background-color: rgb(90, 75, 76);
+          border-color: rgb(137, 120, 122);
+          color: rgb(255, 255, 255);
+        }
+
+        input[type="text"]:focus {
+          border-color: rgb(100, 150, 255);
+        }
+
+        .collapsible-section {
+          border-top-color: rgb(137, 120, 122);
+        }
+
+        button[type="submit"] {
+          background-color: rgb(255, 255, 255);
+          color: rgb(0, 0, 0);
+        }
+
+        button[type="submit"]:hover {
+          background-color: rgb(217, 217, 217);
+        }
+
+        #copy-feedback {
+          color: rgb(129, 230, 145) !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>🔑 <span id="title">Password Generator</span></h1>
+
+    <form id="passwordForm">
+      <label
+        ><span id="length-text">Password Length:</span>
+        <span id="length-label">16</span></label
+      >
+      <input
+        type="range"
+        id="length"
+        min="8"
+        max="64"
+        value="16"
+        oninput="updateLengthLabel(this.value)"
+      />
+
+      <div class="checkbox-group">
+        <label
+          ><input type="checkbox" id="uppercase" checked />
+          <span id="uppercase-label">Uppercase</span></label
+        >
+        <label
+          ><input type="checkbox" id="lowercase" checked />
+          <span id="lowercase-label">Lowercase</span></label
+        >
+        <label
+          ><input type="checkbox" id="numbers" checked />
+          <span id="numbers-label">Numbers</span></label
+        >
+        <label
+          ><input type="checkbox" id="symbols" checked />
+          <span id="symbols-label">Symbols</span></label
+        >
+      </div>
+
+      <div class="collapsible-section">
+        <div class="collapsible-header" onclick="toggleCollapsible(this)">
+          <span id="custom-symbols-title">Custom Symbols</span>
+        </div>
+        <div class="collapsible-content">
+          <label for="custom-symbols-input" id="custom-symbols-label"
+            >Add custom symbols (leave empty to use defaults):</label
+          >
+          <input
+            type="text"
+            id="custom-symbols-input"
+            placeholder="e.g., !@#$£€¥%^&*'&quot;()_-+={}[];:,.<>?/\"
+            autocomplete="off"
+          />
+        </div>
+      </div>
+
+      <button type="submit" id="generate-btn">Generate Password</button>
+      <div class="output" id="password-output"></div>
+      <div id="copy-feedback">✓ Copied to clipboard</div>
+    </form>
+
+    <p style="margin-top: 20px; font-size: 14px; color: rgb(102, 102, 102)">
+      <span id="footer-text"
+        >No Ads, No Tracking, Secure Passwords Anywhere!</span
+      >
+      <a
+        href="https://github.com/400hoops/password-generator"
+        style="color: rgb(0, 123, 255); text-decoration: none"
+        id="footer-link"
+        >Run this code locally.</a
+      >
+    </p>
+
+    <script>
+      const AUTO_CLEAR_DELAY = 30000;
+      const FEEDBACK_DISPLAY_TIME = 2000;
+
+      const translations = {
+        en: {
+          title: "Password Generator",
+          lengthText: "Password Length:",
+          uppercase: "Uppercase",
+          lowercase: "Lowercase",
+          numbers: "Numbers",
+          symbols: "Symbols",
+          customSymbolsTitle: "Custom Symbols",
+          customSymbolsLabel:
+            "Add custom symbols (leave empty to use defaults):",
+          generateBtn: "Generate Password",
+          footerText: "No Ads, No Tracking, Secure Passwords Anywhere!",
+          footerLink: "Run this code locally.",
+          errorMessage: "⚠️ Please select at least one option.",
+          copyFeedback: "✓ Copied to clipboard",
+        },
+        ja: {
+          title: "パスワードジェネレータ",
+          lengthText: "パスワード長:",
+          uppercase: "大文字",
+          lowercase: "小文字",
+          numbers: "数字",
+          symbols: "記号",
+          customSymbolsTitle: "カスタム記号",
+          customSymbolsLabel:
+            "カスタム記号を追加（空のままにするとデフォルトを使用）:",
+          generateBtn: "パスワード生成",
+          footerText: "広告なし、トラッキングなし、どこでも安全なパスワード！",
+          footerLink: "このコードをローカルで実行する。",
+          errorMessage: "⚠️ 最低1つのオプションを選択してください。",
+          copyFeedback: "✓ クリップボードにコピーしました",
+        },
+      };
+
+      let currentLanguage = "en";
+      let autoClearTimeout;
+
+      function detectLanguage() {
+        const browserLanguage = navigator.language || navigator.userLanguage;
+        if (browserLanguage.startsWith("ja")) {
+          currentLanguage = "ja";
+        } else {
+          currentLanguage = "en";
+        }
+        updateLanguage();
+        document.getElementById("length").value = 16;
+        updateLengthLabel(16);
+      }
+
+      function updateLanguage() {
+        const t = translations[currentLanguage];
+
+        document.getElementById("title").textContent = t.title;
+        document.getElementById("length-text").textContent = t.lengthText;
+        document.getElementById("uppercase-label").textContent = t.uppercase;
+        document.getElementById("lowercase-label").textContent = t.lowercase;
+        document.getElementById("numbers-label").textContent = t.numbers;
+        document.getElementById("symbols-label").textContent = t.symbols;
+        document.getElementById("custom-symbols-title").textContent =
+          t.customSymbolsTitle;
+        document.getElementById("custom-symbols-label").textContent =
+          t.customSymbolsLabel;
+        document.getElementById("generate-btn").textContent = t.generateBtn;
+        document.getElementById("footer-text").textContent = t.footerText;
+        document.getElementById("footer-link").textContent = t.footerLink;
+      }
+
+      function toggleCollapsible(header) {
+        header.classList.toggle("expanded");
+        header.nextElementSibling.classList.toggle("expanded");
+      }
+
+      function updateLengthLabel(val) {
+        document.getElementById("length-label").textContent = val;
+      }
+
+      function getRandomInt(max) {
+        if (!Number.isInteger(max) || max <= 0) {
+          throw new RangeError("max must be a positive integer");
+        }
+        const array = new Uint32Array(1);
+        const limit = Math.floor(0xffffffff / max) * max;
+        let v;
+        do {
+          window.crypto.getRandomValues(array);
+          v = array[0];
+        } while (v >= limit);
+        return v % max;
+      }
+
+      function getRandomChar(chars) {
+        return chars.charAt(getRandomInt(chars.length));
+      }
+
+      async function copyToClipboard(text) {
+        try {
+          await navigator.clipboard.writeText(text);
+          const feedback = document.getElementById("copy-feedback");
+          feedback.textContent = translations[currentLanguage].copyFeedback;
+          feedback.style.display = "block";
+          if (window.copyFeedbackTimeout) {
+            clearTimeout(window.copyFeedbackTimeout);
+          }
+          window.copyFeedbackTimeout = setTimeout(() => {
+            feedback.style.display = "none";
+          }, FEEDBACK_DISPLAY_TIME);
+          return true;
+        } catch (err) {
+          console.error("Failed to copy password:", err);
+          alert("Failed to copy password. Please try again.");
+          return false;
+        }
+      }
+
+      function scheduleAutoClear() {
+        if (autoClearTimeout) {
+          clearTimeout(autoClearTimeout);
+        }
+
+        autoClearTimeout = setTimeout(() => {
+          document.getElementById("password-output").textContent = "";
+          document.getElementById("copy-feedback").style.display = "none";
+        }, AUTO_CLEAR_DELAY);
+      }
+
+      document
+        .getElementById("passwordForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const length = document.getElementById("length").value;
+          const useUpper = document.getElementById("uppercase").checked;
+          const useLower = document.getElementById("lowercase").checked;
+          const useNumbers = document.getElementById("numbers").checked;
+          const useSymbols = document.getElementById("symbols").checked;
+
+          const upperChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+          const lowerChars = "abcdefghijklmnopqrstuvwxyz";
+          const numberChars = "0123456789";
+
+          let customInput = document
+            .getElementById("custom-symbols-input")
+            .value.trim();
+          let symbolChars;
+
+          if (customInput) {
+            symbolChars = [...new Set(customInput)].join("");
+          } else {
+            symbolChars = "!@#$£€¥%^&*'\"()_-+={}[];:,.<>?/\\";
+          }
+
+          let charset = "";
+          let requiredChars = [];
+
+          if (useUpper) {
+            charset += upperChars;
+            requiredChars.push(getRandomChar(upperChars));
+          }
+          if (useLower) {
+            charset += lowerChars;
+            requiredChars.push(getRandomChar(lowerChars));
+          }
+          if (useNumbers) {
+            charset += numberChars;
+            requiredChars.push(getRandomChar(numberChars));
+          }
+          if (useSymbols) {
+            charset += symbolChars;
+            requiredChars.push(getRandomChar(symbolChars));
+          }
+
+          if (!charset) {
+            document.getElementById("password-output").textContent =
+              translations[currentLanguage].errorMessage;
+            return;
+          }
+
+          let remainingLength = length - requiredChars.length;
+          let passwordArray = [...requiredChars];
+
+          for (let i = 0; i < remainingLength; i++) {
+            passwordArray.push(getRandomChar(charset));
+          }
+
+          for (let i = passwordArray.length - 1; i > 0; i--) {
+            const j = getRandomInt(i + 1);
+            [passwordArray[i], passwordArray[j]] = [
+              passwordArray[j],
+              passwordArray[i],
+            ];
+          }
+
+          const password = passwordArray.join("");
+          document.getElementById("password-output").textContent = password;
+
+          await copyToClipboard(password);
+          scheduleAutoClear();
+        });
+
+      detectLanguage();
+
+      function resetForm() {
+        document.getElementById("uppercase").checked = true;
+        document.getElementById("lowercase").checked = true;
+        document.getElementById("numbers").checked = true;
+        document.getElementById("symbols").checked = true;
+        document.getElementById("length").value = 16;
+        updateLengthLabel(16);
+
+        document.getElementById("custom-symbols-input").value = "";
+        document.getElementById("password-output").textContent = "";
+        document.getElementById("copy-feedback").style.display = "none";
+
+        const collapsibleHeader = document.querySelector(".collapsible-header");
+        const collapsibleContent = document.querySelector(
+          ".collapsible-content",
+        );
+        if (collapsibleHeader.classList.contains("expanded")) {
+          collapsibleHeader.classList.remove("expanded");
+          collapsibleContent.classList.remove("expanded");
+        }
+
+        if (autoClearTimeout) {
+          clearTimeout(autoClearTimeout);
+        }
+      }
+
+      window.addEventListener("load", resetForm);
+    </script>
+  </body>
+</html>
